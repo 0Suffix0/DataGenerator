@@ -15,5 +15,7 @@ namespace DataGenerator_Core
         public string City();
         public string Country();
         public DateTime DateTime(DateTime start, DateTime end);
+        public string Email();
+        public string Phone();
     }
 }
