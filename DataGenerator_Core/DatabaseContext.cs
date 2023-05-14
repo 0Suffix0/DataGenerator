@@ -4,20 +4,20 @@ using Microsoft.EntityFrameworkCore;
 namespace DataGenerator_Core
 {
     public sealed class DatabaseContext : DbContext
-    { 
-        private readonly string? connectionString = System.Configuration.ConfigurationManager.AppSettings.Get("connectionString");
+    {
+        private readonly string? _connectionString;
 
         public DbSet<Entites.Type> Types { get; set; } = null!;
         public DbSet<Template> Templates { get; set; } = null!;
 
-        public DatabaseContext()
+        public DatabaseContext(string connectionString)
         {
-            
+            _connectionString = connectionString;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            optionsBuilder.UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString));
         }
     }
 }
