@@ -1,12 +1,24 @@
 ﻿using DataGenerator_Core.Entites;
-using System.Diagnostics.Metrics;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataGenerator_Core.Services
 {
     public sealed class Generator
     {
         Random random = new ();
+        private DatabaseContext _databaseContext;
 
+        public Generator(string connectionString)
+        {
+            _databaseContext = new DatabaseContext(connectionString);
+        }
+
+        /// <summary>
+        /// Starts generating test data
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="counter"></param>
+        /// <returns>List within a List where the second one stores the strings like (int, "string")</returns>
         public List<List<string>> Start(List<Column> columns, int counter)
         {
             List<List<string>> results = new();
@@ -31,6 +43,21 @@ namespace DataGenerator_Core.Services
                         case "DateTime":
                             rows.Add(DateTime(column.From, column.To).ToString());
                             break;
+                        case "Name":
+                            rows.Add(Name());
+                            break;
+                        case "City":
+                            rows.Add(City());
+                            break;
+                        case "Country":
+                            rows.Add(Country());
+                            break;
+                        case "Email":
+                            rows.Add(Email());
+                            break;
+                        case "Phone":
+                            rows.Add(Phone());
+                            break;
                     }
                 }
 
@@ -40,14 +67,30 @@ namespace DataGenerator_Core.Services
             return results;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>One random template where type is a city</returns>
         private string City()
         {
-            throw new NotImplementedException();
+            List<Template> city = (from Template in _databaseContext.Templates.Include(t => t.Type)
+                                    where Template.Type.Name == "City"
+                                    select Template).ToList();
+
+            return city[new Random().Next(city.Count)].Data.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>One random template where type is a country</returns>
         private string Country()
         {
-            throw new NotImplementedException();
+            List<Template> country = (from Template in _databaseContext.Templates.Include(t => t.Type)
+                                    where Template.Type.Name == "Country"
+                                    select Template).ToList();
+
+            return country[new Random().Next(country.Count)].Data.ToString();
         }
 
         /// <summary>
@@ -59,9 +102,17 @@ namespace DataGenerator_Core.Services
             return new DateTime(random.Next(start, end), random.Next(1, 12), random.Next(1,30)).ToShortDateString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>One random template where type is a email</returns>
         private string Email()
         {
-            throw new NotImplementedException();
+            List<Template> email = (from Template in _databaseContext.Templates.Include(t => t.Type)
+                                   where Template.Type.Name == "Email"
+                                   select Template).ToList();
+
+            return email[new Random().Next(email.Count)].Data.ToString();
         }
 
         /// <summary>
@@ -74,9 +125,17 @@ namespace DataGenerator_Core.Services
             return (random.NextDouble() * end);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>One random template where type is a name</returns>
         private string Name()
         {
-            throw new NotImplementedException();
+            List<Template> name = (from Template in _databaseContext.Templates.Include(t => t.Type) 
+                                   where Template.Type.Name == "Name"
+                                   select Template).ToList();
+
+            return name[new Random().Next(name.Count)].Data.ToString();
         }
 
         /// <summary>
@@ -90,9 +149,17 @@ namespace DataGenerator_Core.Services
             return random.Next(start, end);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>One random template where type is a phone</returns>
         private string Phone()
         {
-            throw new NotImplementedException();
+            List<Template> phone = (from Template in _databaseContext.Templates.Include(t => t.Type)
+                                   where Template.Type.Name == "Phone"
+                                   select Template).ToList();
+
+            return phone[new Random().Next(phone.Count)].Data.ToString();
         }
 
         /// <summary>
