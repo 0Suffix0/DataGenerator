@@ -25,7 +25,7 @@ namespace DataGenerator_Core.Services
         /// <returns>string "INSERT INTO" with columns</returns>
         private string toSQLHeader(List<Column> columns)
         {
-            string sqlHead = "INSERT INTO TABLENAME (";
+            string sqlHead = "INSERT INTO `TABLENAME` (";
 
             foreach (Column column in columns)
             {
@@ -57,7 +57,7 @@ namespace DataGenerator_Core.Services
                     }
                     catch
                     {
-                        sqlres += "\"" + result + "\"" + ", ";
+                        sqlres += "\'" + result + "\'" + ", ";
                     }
                 }
 
