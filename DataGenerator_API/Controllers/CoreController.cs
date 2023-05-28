@@ -31,13 +31,5 @@ namespace DataGenerator_API.Controllers
 
             return result;
         }
-
-        [HttpGet]
-        public string Test()
-        {
-            string result = String.Empty;
-            
-            return "All good!";
-        }
     }
 }
