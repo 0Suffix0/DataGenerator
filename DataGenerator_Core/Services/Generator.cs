@@ -6,11 +6,11 @@ namespace DataGenerator_Core.Services
     public sealed class Generator
     {
         Random random = new ();
-        private DatabaseContext _databaseContext;
+        private DatabaseContext _context;
 
-        public Generator(string connectionString)
+        public Generator(DatabaseContext context)
         {
-            _databaseContext = new DatabaseContext(connectionString);
+            _context = context;
         }
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace DataGenerator_Core.Services
         /// <param name="columns"></param>
         /// <param name="counter"></param>
         /// <returns>List within a List where the second one stores the strings like (int, "string")</returns>
-        public List<List<string>> Start(List<Column> columns, int counter)
+        public List<List<string>> Start(IEnumerable<Column> columns, int counter)
         {
             List<List<string>> results = new();
 
@@ -73,7 +73,7 @@ namespace DataGenerator_Core.Services
         /// <returns>One random template where type is a city</returns>
         private string City()
         {
-            List<Template> city = (from Template in _databaseContext.Templates.Include(t => t.Type)
+            List<Template> city = (from Template in _context.Templates.Include(t => t.Type)
                                     where Template.Type.Name == "City"
                                     select Template).ToList();
 
@@ -86,7 +86,7 @@ namespace DataGenerator_Core.Services
         /// <returns>One random template where type is a country</returns>
         private string Country()
         {
-            List<Template> country = (from Template in _databaseContext.Templates.Include(t => t.Type)
+            List<Template> country = (from Template in _context.Templates.Include(t => t.Type)
                                     where Template.Type.Name == "Country"
                                     select Template).ToList();
 
@@ -108,7 +108,7 @@ namespace DataGenerator_Core.Services
         /// <returns>One random template where type is a email</returns>
         private string Email()
         {
-            List<Template> email = (from Template in _databaseContext.Templates.Include(t => t.Type)
+            List<Template> email = (from Template in _context.Templates.Include(t => t.Type)
                                    where Template.Type.Name == "Email"
                                    select Template).ToList();
 
@@ -131,7 +131,7 @@ namespace DataGenerator_Core.Services
         /// <returns>One random template where type is a name</returns>
         private string Name()
         {
-            List<Template> name = (from Template in _databaseContext.Templates.Include(t => t.Type) 
+            List<Template> name = (from Template in _context.Templates.Include(t => t.Type) 
                                    where Template.Type.Name == "Name"
                                    select Template).ToList();
 
@@ -155,7 +155,7 @@ namespace DataGenerator_Core.Services
         /// <returns>One random template where type is a phone</returns>
         private string Phone()
         {
-            List<Template> phone = (from Template in _databaseContext.Templates.Include(t => t.Type)
+            List<Template> phone = (from Template in _context.Templates.Include(t => t.Type)
                                    where Template.Type.Name == "Phone"
                                    select Template).ToList();
 

@@ -10,7 +10,7 @@ namespace DataGenerator_Core.Services
         /// <param name="columns"></param>
         /// <param name="generatorResults"></param>
         /// <returns>SQL "INSERT INTO VALUES" string</returns>
-        public string toSQL(List<Column> columns, List<List<string>> generatorResults)
+        public string toSQL(IEnumerable<Column> columns, List<List<string>> generatorResults)
         {
             string sqlHead = toSQLHeader(columns);
             string sqlBody = toSQLBody(generatorResults);
@@ -23,7 +23,7 @@ namespace DataGenerator_Core.Services
         /// </summary>
         /// <param name="columns"></param>
         /// <returns>string "INSERT INTO" with columns</returns>
-        private string toSQLHeader(List<Column> columns)
+        private string toSQLHeader(IEnumerable<Column> columns)
         {
             string sqlHead = "INSERT INTO `TABLENAME` (";
 
