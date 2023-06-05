@@ -19,7 +19,7 @@ namespace DataGenerator_Core.Services
         /// <param name="columns"></param>
         /// <param name="counter"></param>
         /// <returns>List within a List where the second one stores the strings like (int, "string")</returns>
-        public List<List<string>> Start(IEnumerable<Column> columns, int counter)
+        public IEnumerable<IEnumerable<string>> Start(IEnumerable<Column> columns, int counter)
         {
             List<List<string>> results = new();
 
