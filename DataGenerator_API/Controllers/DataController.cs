@@ -2,7 +2,6 @@
 using DataGenerator_Core.Entites;
 using DataGenerator_Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Metrics;
 
 namespace DataGenerator_API.Controllers
 {
@@ -31,7 +30,7 @@ namespace DataGenerator_API.Controllers
 
 
             Generator generator = new(_context);
-            List<List<string>> generatorResult = generator.Start(columns, count);
+            IEnumerable<IEnumerable<string>> generatorResult = generator.Start(columns, count);
 
             Converter converter = new();
             switch (convertTo)
