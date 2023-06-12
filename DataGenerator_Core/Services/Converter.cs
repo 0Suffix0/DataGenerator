@@ -32,7 +32,7 @@ namespace DataGenerator_Core.Services
                 sqlHead += column.ColumnName + ", ";
             }
 
-            return sqlHead.Remove(sqlHead.Length - 2) + ")\n";
+            return sqlHead.Remove(sqlHead.Length - 2) + ")";
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace DataGenerator_Core.Services
         /// <returns>string "VALUES" with data</returns>
         private string toSQLBody(IEnumerable<IEnumerable<string>> generatorResults)
         {
-            string sqlBody = "VALUES ";
+            string sqlBody = " VALUES ";
 
             foreach(IEnumerable<string> results in generatorResults)
             {
@@ -61,7 +61,7 @@ namespace DataGenerator_Core.Services
                     }
                 }
 
-                sqlBody += sqlres.Remove(sqlres.Length - 2) + "),\n";
+                sqlBody += sqlres.Remove(sqlres.Length - 2) + "),";
             }
 
             return sqlBody.Remove(sqlBody.Length - 2) + ";";
