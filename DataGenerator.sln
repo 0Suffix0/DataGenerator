@@ -5,9 +5,7 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGenerator_Core", "DataGenerator_Core\DataGenerator_Core.csproj", "{2EDC6B26-1892-42E1-A67B-C235008D33C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGenerator_CLI", "DataGenerator_CLI\DataGenerator_CLI.csproj", "{77E0DF84-6152-4145-BCFC-D41314CBF8E6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGenerator_API", "DataGenerator_API\DataGenerator_API.csproj", "{E3F6C41A-1B37-4326-B646-EFEEA58AB402}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataGenerator_API", "DataGenerator_API\DataGenerator_API.csproj", "{E3F6C41A-1B37-4326-B646-EFEEA58AB402}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{2EDC6B26-1892-42E1-A67B-C235008D33C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EDC6B26-1892-42E1-A67B-C235008D33C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EDC6B26-1892-42E1-A67B-C235008D33C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77E0DF84-6152-4145-BCFC-D41314CBF8E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77E0DF84-6152-4145-BCFC-D41314CBF8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77E0DF84-6152-4145-BCFC-D41314CBF8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77E0DF84-6152-4145-BCFC-D41314CBF8E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3F6C41A-1B37-4326-B646-EFEEA58AB402}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3F6C41A-1B37-4326-B646-EFEEA58AB402}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3F6C41A-1B37-4326-B646-EFEEA58AB402}.Release|Any CPU.ActiveCfg = Release|Any CPU
