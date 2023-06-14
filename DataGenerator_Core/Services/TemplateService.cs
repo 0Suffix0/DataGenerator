@@ -22,7 +22,7 @@ namespace DataGenerator_Core.Services
         /// </summary>
         /// <param name="dataName"></param>
         /// <returns></returns>
-        public Template? GetOne(string data) => _context.Templates.FirstOrDefault(t => t.Data == data); 
+        public Template? GetOne(string data) => _context.Templates.FirstOrDefault(t => t.Data == data);
 
         /// <summary>
         /// Create new template if not exists
