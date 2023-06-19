@@ -64,7 +64,7 @@ namespace DataGenerator_Core.Services
                 sqlBody += sqlres.Remove(sqlres.Length - 2) + "),";
             }
 
-            return sqlBody.Remove(sqlBody.Length - 2) + ";";
+            return sqlBody.Remove(sqlBody.Length - 1) + ";";
         }
     }
 }
