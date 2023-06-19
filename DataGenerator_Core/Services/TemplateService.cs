@@ -1,28 +1,50 @@
 ﻿using DataGenerator_Core.Entites;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataGenerator_Core.Services
 {
     public sealed class TemplateService
     {
-        private DatabaseContext _context;
+        private DatabaseContext context;
 
         public TemplateService(DatabaseContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         /// <summary>
         /// Get all templates
         /// </summary>
         /// <returns>All templates</returns>
-        public IEnumerable<Template> GetAll() => _context.Templates.ToList();
+        public IEnumerable<Template> GetAll() => context.Templates.ToList();
 
         /// <summary>
         /// Get one template
         /// </summary>
-        /// <param name="dataName"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public Template? GetOne(string data) => _context.Templates.FirstOrDefault(t => t.Data == data);
+        public Template? GetOne(string data) => context.Templates.FirstOrDefault(t => t.Data == data);
+
+        /// <summary>
+        /// Get one template by type
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public Template? GetOneByType(string typeName)
+        {   TypeService service = new TypeService(context);
+
+            Entites.Type type = service.GetOne(typeName);
+
+            if (type == null)
+                throw new ArgumentNullException($"Type is null");
+
+            List<Template> templates = (from Template in context.Templates.Include(t => t.Type)
+                                    where Template.Type.Name == type.Name
+                                    select Template).ToList();
+
+            return templates[new Random().Next(templates.Count)];
+        }
 
         /// <summary>
         /// Create new template if not exists
@@ -36,8 +58,8 @@ namespace DataGenerator_Core.Services
             {
                 Template template = new Template() { Data = data, TypeID = typeID };
 
-                _context.Templates.Add(template);
-                _context.SaveChanges();
+                context.Templates.Add(template);
+                context.SaveChanges();
 
                 return template;
             }
@@ -56,7 +78,7 @@ namespace DataGenerator_Core.Services
             if (template != null)
             {
                 template.Data = newData;
-                _context.SaveChanges();
+                context.SaveChanges();
 
                 return template;
             }
@@ -75,7 +97,7 @@ namespace DataGenerator_Core.Services
             if (template != null)
             {
                 template.TypeID = newTypeID;
-                _context.SaveChanges();
+                context.SaveChanges();
 
                 return template;
             }
@@ -92,8 +114,8 @@ namespace DataGenerator_Core.Services
             Template? template = GetOne(data);
             if (template != null)
             {
-                _context.Templates.Remove(template);
-                _context.SaveChanges();
+                context.Templates.Remove(template);
+                context.SaveChanges();
 
                 return template;
             }
