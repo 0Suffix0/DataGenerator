@@ -6,11 +6,11 @@ namespace DataGenerator_Core.Services
     public sealed class Generator
     {
         Random random = new ();
-        private DatabaseContext _context;
+        private DatabaseContext context;
 
         public Generator(DatabaseContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         /// <summary>
@@ -29,6 +29,9 @@ namespace DataGenerator_Core.Services
 
                 foreach (Column column in columns)
                 {
+                    if (column.Type == null)
+                        throw new ArgumentNullException($"Column Type is null");
+
                     switch (column.Type)
                     {
                         case "NumberRange":
@@ -43,20 +46,8 @@ namespace DataGenerator_Core.Services
                         case "DateTime":
                             rows.Add(DateTime(column.From, column.To).ToString());
                             break;
-                        case "Name":
-                            rows.Add(Name());
-                            break;
-                        case "City":
-                            rows.Add(City());
-                            break;
-                        case "Country":
-                            rows.Add(Country());
-                            break;
-                        case "Email":
-                            rows.Add(Email());
-                            break;
-                        case "Phone":
-                            rows.Add(Phone());
+                        default:
+                            rows.Add(TemplateByType(column.Type));
                             break;
                     }
                 }
@@ -68,29 +59,14 @@ namespace DataGenerator_Core.Services
         }
 
         /// <summary>
-        /// 
+        /// Get one data of template by type
         /// </summary>
-        /// <returns>One random template where type is a city</returns>
-        private string City()
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private string TemplateByType(string type)
         {
-            List<Template> city = (from Template in _context.Templates.Include(t => t.Type)
-                                    where Template.Type.Name == "City"
-                                    select Template).ToList();
-
-            return city[new Random().Next(city.Count)].Data.ToString();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>One random template where type is a country</returns>
-        private string Country()
-        {
-            List<Template> country = (from Template in _context.Templates.Include(t => t.Type)
-                                    where Template.Type.Name == "Country"
-                                    select Template).ToList();
-
-            return country[new Random().Next(country.Count)].Data.ToString();
+            TemplateService service = new TemplateService(context);
+            return service.GetOneByType(type).Data.ToString();
         }
 
         /// <summary>
@@ -100,19 +76,6 @@ namespace DataGenerator_Core.Services
         private string DateTime(int start, int end)
         {
             return new DateTime(random.Next(start, end), random.Next(1, 12), random.Next(1,30)).ToShortDateString();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>One random template where type is a email</returns>
-        private string Email()
-        {
-            List<Template> email = (from Template in _context.Templates.Include(t => t.Type)
-                                   where Template.Type.Name == "Email"
-                                   select Template).ToList();
-
-            return email[new Random().Next(email.Count)].Data.ToString();
         }
 
         /// <summary>
@@ -126,19 +89,6 @@ namespace DataGenerator_Core.Services
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>One random template where type is a name</returns>
-        private string Name()
-        {
-            List<Template> name = (from Template in _context.Templates.Include(t => t.Type) 
-                                   where Template.Type.Name == "Name"
-                                   select Template).ToList();
-
-            return name[new Random().Next(name.Count)].Data.ToString();
-        }
-
-        /// <summary>
         /// Generate random integer
         /// </summary>
         /// <param name="start"></param>
@@ -147,19 +97,6 @@ namespace DataGenerator_Core.Services
         private int NumberRange(int start, int end)
         {
             return random.Next(start, end);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>One random template where type is a phone</returns>
-        private string Phone()
-        {
-            List<Template> phone = (from Template in _context.Templates.Include(t => t.Type)
-                                   where Template.Type.Name == "Phone"
-                                   select Template).ToList();
-
-            return phone[new Random().Next(phone.Count)].Data.ToString();
         }
 
         /// <summary>
