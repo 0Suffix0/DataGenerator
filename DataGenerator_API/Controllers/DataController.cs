@@ -1,5 +1,4 @@
-﻿using DataGenerator_Core;
-using DataGenerator_Core.Entites;
+﻿using DataGenerator_Core.Entites;
 using DataGenerator_Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +8,17 @@ namespace DataGenerator_API.Controllers
     [Route("api/generatedata")]
     public class DataController : ControllerBase
     {
-        private readonly DatabaseContext _context;
+        private readonly Generator _generator;
+        private readonly Converter _converter;
 
-        public DataController(DatabaseContext context)
+        public DataController(Generator generator, Converter converter)
         {
-            _context = context;
+            _generator = generator;
+            _converter = converter;
         }
 
         [HttpPost]
-        public async Task<IResult> CreateData([FromBody] IEnumerable<Column> columns, string convertTo = "SQL", int count = 2)
+        public async Task<IActionResult> CreateData([FromBody] IEnumerable<Column> columns, string convertTo = "SQL", int count = 2)
         {
             string result = String.Empty;
 
@@ -28,19 +29,17 @@ namespace DataGenerator_API.Controllers
                 if (column.Type == null || column.ColumnName == null)
                     throw new ArgumentNullException("Required fields in columns is null");
 
+            
+            IEnumerable<IEnumerable<string>> generatorResult = _generator.Start(columns, count);
 
-            Generator generator = new(_context);
-            IEnumerable<IEnumerable<string>> generatorResult = generator.Start(columns, count);
-
-            Converter converter = new();
             switch (convertTo)
             {
                 case "SQL":
-                    result = converter.toSQL(columns, generatorResult);
+                    result = _converter.toSQL(columns, generatorResult);
                     break;
             }
 
-            return Results.Ok(result);
-        } 
+            return await Task.FromResult(Ok(result));
+        }
     }
 }

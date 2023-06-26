@@ -1,16 +1,15 @@
 ﻿using DataGenerator_Core.Entites;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataGenerator_Core.Services
 {
     public sealed class Generator
     {
         Random random = new ();
-        private DatabaseContext context;
+        private readonly TemplateService _service;
 
-        public Generator(DatabaseContext context)
+        public Generator(TemplateService service)
         {
-            this.context = context;
+            _service = service;
         }
 
         /// <summary>
@@ -65,8 +64,7 @@ namespace DataGenerator_Core.Services
         /// <returns></returns>
         private string TemplateByType(string type)
         {
-            TemplateService service = new TemplateService(context);
-            return service.GetOneByType(type).Data.ToString();
+            return _service.GetOneByType(type).Data.ToString();
         }
 
         /// <summary>

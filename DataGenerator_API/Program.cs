@@ -1,4 +1,5 @@
 using DataGenerator_Core;
+using DataGenerator_Core.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataGenerator_API
@@ -12,8 +13,14 @@ namespace DataGenerator_API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
+            // TODO: Перенести в appsettings.Development.json
             string connection = System.Configuration.ConfigurationManager.AppSettings.Get("connectionString");
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
+
+            builder.Services.AddScoped<Generator>();
+            builder.Services.AddSingleton<Converter>();
+            builder.Services.AddScoped<TemplateService>();
+            builder.Services.AddScoped<TypeService>();
 
             var app = builder.Build();
 
