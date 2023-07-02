@@ -14,8 +14,7 @@ namespace DataGenerator_API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-            // TODO: Перенести в appsettings.Development.json
-            string connection = System.Configuration.ConfigurationManager.AppSettings.Get("connectionString");
+            string connection = builder.Configuration.GetConnectionString("datagenerator.postgres");
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
             builder.Services.AddControllers()
             .AddJsonOptions(options =>
