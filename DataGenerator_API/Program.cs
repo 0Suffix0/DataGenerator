@@ -14,7 +14,8 @@ namespace DataGenerator_API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-            string connection = builder.Configuration.GetConnectionString("datagenerator.postgres");
+            string? connection = builder.Configuration.GetConnectionString("datagenerator.postgres")
+                ?? throw new NullReferenceException("Нет строки подключения к базе данных");
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
             builder.Services.AddControllers()
             .AddJsonOptions(options =>
