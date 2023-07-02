@@ -1,6 +1,7 @@
 using DataGenerator_Core;
 using DataGenerator_Core.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace DataGenerator_API
 {
@@ -13,10 +14,14 @@ namespace DataGenerator_API
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-            // TODO: Перенести в appsettings.Development.json
-            string connection = System.Configuration.ConfigurationManager.AppSettings.Get("connectionString");
+            string? connection = builder.Configuration.GetConnectionString("datagenerator.postgres")
+                ?? throw new NullReferenceException("Нет строки подключения к базе данных");
             builder.Services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
-
+            builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
             builder.Services.AddScoped<Generator>();
             builder.Services.AddSingleton<Converter>();
             builder.Services.AddScoped<TemplateService>();

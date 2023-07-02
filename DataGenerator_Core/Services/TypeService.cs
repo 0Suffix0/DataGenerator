@@ -56,7 +56,7 @@
                 throw new ArgumentException($"Тип с именем {currentName} не найден");
 
             type.Name = newName;
-            _context.SaveChanges();
+            context.SaveChanges();
 
             return type;
         }

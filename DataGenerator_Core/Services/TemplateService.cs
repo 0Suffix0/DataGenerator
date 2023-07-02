@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataGenerator_Core.Services
 {
+    // TODO: Перекомментировать код.
     public sealed class TemplateService
     {
         private readonly DatabaseContext context;
@@ -18,14 +19,21 @@ namespace DataGenerator_Core.Services
         /// Получает все шаблоны
         /// </summary>
         /// <returns>Все шаблоны</returns>
-        public IEnumerable<Template> GetAll() => context.Templates.ToList();
+        public List<Template> GetAll()
+        {
+            return context.Templates.AsNoTracking().Include(t => t.Type).ToList()
+                ?? throw new ArgumentException($"Список шаблонов пуст.");
+        }
 
         /// <summary>
         /// Получает один шаблон
         /// </summary>
         /// <param name="data">Данные(имя) шаблона</param>
         /// <returns>Один шаблон</returns>
-        public Template? GetOne(string data) => context.Templates.FirstOrDefault(t => t.Data == data);
+        public Template? GetOne(string data)
+        {
+            return context.Templates.Include(t => t.Type).FirstOrDefault(t => t.Data == data);
+        }
 
         /// <summary>
         /// Получает один случайный шаблон по имени типа
@@ -42,6 +50,7 @@ namespace DataGenerator_Core.Services
             if (type == null)
                 throw new ArgumentNullException($"Тип с именем {typeName} не найден");
 
+            // TODO: Отрефакторить, вынести в GetAllByType
             List<Template> templates = (from Template in context.Templates.Include(t => t.Type)
                                     where Template.Type.Name == type.Name
                                     select Template).ToList();
@@ -53,14 +62,17 @@ namespace DataGenerator_Core.Services
         /// Создает новый шаблон
         /// </summary>
         /// <param name="dataName">Данные(имя) шаблона</param>
-        /// <param name="typeID">Идентификатор типа</param>
+        /// <param name="typeName">Имя типа</param>
         /// <returns>Новый шаблон</returns>
-        public Template? Create(string data, int typeID)
+        public Template? Create(string data, string typeName)
         {
             if (GetOne(data) != null)
                 throw new ArgumentException($"Данный шаблон уже существует");
 
-            Template template = new Template() { Data = data, TypeID = typeID };
+            Entites.Type type = service.GetOne(typeName)
+                ?? throw new ArgumentException($"Данный тип не найден: {typeName}");
+
+            Template template = new Template() { Data = data, Type = type };
 
             context.Templates.Add(template);
             context.SaveChanges();
@@ -76,10 +88,13 @@ namespace DataGenerator_Core.Services
         /// <returns>Измененный шаблон</returns>
         public Template? EditData(string currentData, string newData)
         { 
-            Template? template = GetOne(currentData);
+            Template? template = GetOne(currentData)
+                ?? throw new ArgumentException($"Шаблон с данными {currentData} не найден");
 
-            if (template == null)
-                throw new ArgumentException($"Шаблон с данными {currentData} не найден");
+            Template? templateAlreadyExist = GetOne(newData);
+
+            if (templateAlreadyExist != null)
+                throw new ArgumentException($"Шаблон с данными {newData} уже существует");
 
             template.Data = newData;
             context.SaveChanges();
@@ -95,14 +110,11 @@ namespace DataGenerator_Core.Services
         /// <returns>Шаблон с новым типом</returns>
         public Template? EditType(string data, string typeName)
         {
-            Template? template = GetOne(data);
-            Entites.Type type = service.GetOne(typeName);
+            Template? template = GetOne(data)
+                ?? throw new ArgumentException($"Шаблон с данными {data} не найден");
 
-            if (template == null)
-                throw new ArgumentException($"Шаблон с данными {data} не найден");
-
-            if (type == null)
-                throw new ArgumentException($"Тип с именем {typeName} не найден");
+            Entites.Type type = service.GetOne(typeName)
+                ?? throw new ArgumentException($"Тип с именем {typeName} не найден");
 
             template.Type = type;
             context.SaveChanges();
@@ -117,10 +129,8 @@ namespace DataGenerator_Core.Services
         /// <returns>Удаленный шаблон</returns>
         public Template? Delete(string data)
         {
-            Template? template = GetOne(data);
-
-            if (template == null)
-                throw new ArgumentException($"Шаблон с данными {data} не найден");
+            Template? template = GetOne(data)
+                ?? throw new ArgumentException($"Шаблон с данными {data} не найден");
 
             context.Remove(template);
             context.SaveChanges();
